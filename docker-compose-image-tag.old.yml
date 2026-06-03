@@ -31,6 +31,13 @@ x-superset-volumes:
   - superset_home:/app/superset_home
 
 services:
+  redis:
+    image: redis:7
+    container_name: superset_cache
+    restart: unless-stopped
+    volumes:
+      - redis:/data
+
   db:
     env_file:
       - path: docker/.env # default
@@ -38,12 +45,8 @@ services:
       - path: docker/.env-local # optional override
         required: false
     image: postgres:16
-    ports:
-      - 5432:5432
     container_name: superset_db
     restart: unless-stopped
-    networks:
-      - dockers_share_net
     volumes:
       - db_home:/var/lib/postgresql/data
       - ./docker/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
@@ -64,8 +67,6 @@ services:
     depends_on:
       superset-init:
         condition: service_completed_successfully
-    networks:
-      - dockers_share_net
     volumes: *superset-volumes
 
   superset-init:
@@ -77,13 +78,11 @@ services:
         required: true
       - path: docker/.env-local # optional override
         required: false
-    networks:
-      - dockers_share_net
     depends_on:
       db:
         condition: service_started
-      # redis:
-      #   condition: service_started
+      redis:
+        condition: service_started
     user: "root"
     volumes: *superset-volumes
     healthcheck:
@@ -103,8 +102,6 @@ services:
       superset-init:
         condition: service_completed_successfully
     user: "root"
-    networks:
-      - dockers_share_net
     volumes: *superset-volumes
     healthcheck:
       test:
@@ -128,8 +125,6 @@ services:
         condition: service_completed_successfully
     user: "root"
     volumes: *superset-volumes
-    networks:
-      - dockers_share_net
     healthcheck:
       disable: true
 
@@ -138,9 +133,5 @@ volumes:
     external: false
   db_home:
     external: false
-  # redis:
-  #   external: false
-
-networks:
-  dockers_share_net:
-    external: true
+  redis:
+    external: false
