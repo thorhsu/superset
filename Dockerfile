@@ -1,4 +1,4 @@
-FROM apache/superset:latest
+FROM apachesuperset.docker.scarf.sh/apache/superset:latest-dev
 USER root
 RUN apt-get update && \
     apt-get install -y libldap2-dev libsasl2-dev ldap-utils
