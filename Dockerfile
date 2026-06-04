@@ -1,8 +1,9 @@
 FROM apache/superset:latest
 USER root
 RUN apt-get update && \
-    apt-get install -y libldap2-dev libsasl2-dev ldap-utils && \
-    pip install ldap3 python-ldap
+    apt-get install -y libldap2-dev libsasl2-dev ldap-utils
+RUN pip install --upgrade pip
+RUN pip install ldap3
 
 COPY --chown=superset:root ./superset-excel/docker/pythonpath_dev/superset_config.py /app/docker/pythonpath_dev/superset_config.py
 COPY --chown=superset:root ./superset-excel/superset/reports/. /app/superset/reports/.
