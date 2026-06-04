@@ -69,7 +69,7 @@ services:
     volumes: *superset-volumes
 
   superset-init:
-    image: *superset-image
+    build: .
     container_name: superset_init
     command: ["/app/docker/docker-init.sh"]
     env_file:
