@@ -12,4 +12,4 @@ COPY --chown=superset:root ./superset-excel/superset-frontend/src/features/repor
 COPY --chown=superset:root ./superset-excel/superset-frontend/src/features/reports/ReportModal/index.tsx /app/superset-frontend/src/features/reports/ReportModal/index.tsx
 
 
-#USER superset
+USER superset
